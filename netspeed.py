@@ -10,6 +10,8 @@ import os
 import socket
 from BeautifulSoup import BeautifulSoup
 import random
+import logging
+import logging.handlers
 reload(sys)
 #sys.setdefaultencoding('utf-8')
 ua = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_8_3) AppleWebKit/537.22 (KHTML, like Gecko) Maxthon/4.0.4.1012 Chrome/25.0.1364.99 Safari/537.22"
@@ -103,10 +105,10 @@ class NetSpeed(object):
 
 if len(sys.argv) < 2:
     print(
-    """Usage:
-        info -- show the information of your net speed
-         up  -- speed up
-        down -- slow down""")
+    """使用说明:
+        info -- 显示宽带信息
+         up  -- 提速
+        down -- 恢复""")
 else:
     my_netspeed = NetSpeed()
     if sys.argv[1] == "info":
@@ -114,23 +116,24 @@ else:
               % (bool(my_netspeed.status), my_netspeed.old_speed, my_netspeed.old_speed_unit_name,
                  my_netspeed.new_speed, my_netspeed.hours))
     elif sys.argv[1] == "up":
-        #if my_netspeed.hours == 0:
-        #    print("Warning: Do not have any speedup time, speedup may failed!")
-
         status = my_netspeed.speed_up()
-        if status:
-            print("Speed up successfully.")
-        else:
-            print("Speed up failed!")
-            sys.exit(1)
+        while status == False:
+            print("提升失败,60秒后重试!")
+            logging.debug("提升失败,60秒后重试!")
+            time.sleep(60 * 1)
+            status = my_netspeed.speed_up()
+        print("提升成功.")
+        logging.debug("提升成功.")
         while True:
             time.sleep(60 * 10)
             my_netspeed.speed_heartbeat()
+            print("心跳包成功.")
+            logging.debug("心跳包成功.")
 
     elif sys.argv[1] == "down":
         status = my_netspeed.speed_down()
         if status:
-            print("Slow down successfully.")
+            print("恢复成功.")
         else:
-            print("Slow down failed!")
+            print("恢复成功!")
             sys.exit(1)
