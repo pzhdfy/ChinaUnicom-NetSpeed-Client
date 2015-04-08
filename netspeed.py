@@ -13,15 +13,22 @@ import random
 import logging
 import logging.handlers
 reload(sys)
-#sys.setdefaultencoding('utf-8')
-ua = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_8_3) AppleWebKit/537.22 (KHTML, like Gecko) Maxthon/4.0.4.1012 Chrome/25.0.1364.99 Safari/537.22"
+sys.setdefaultencoding('utf-8')
+#ua = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_8_3) AppleWebKit/537.22 (KHTML, like Gecko) Maxthon/4.0.4.1012 Chrome/25.0.1364.99 Safari/537.22"
 
 class NetSpeed(object):
     def __init__(self):
+        self.initSelf()
+        self.get_info()
+
+    def initSelf(self):
         self.account = '100000000000'
         self.cid = self.genCompID()
         self.mac = self.randomMAC()
-        self.get_info()
+        self.logger = logging.getLogger()
+        self.logger.setLevel(logging.INFO)
+        self.logger.addHandler(logging.handlers.SysLogHandler("/dev/log"))
+
 
     def parse_info(self, html):
         def clean_html(html):
@@ -119,21 +126,23 @@ else:
         status = my_netspeed.speed_up()
         while status == False:
             print("提升失败,60秒后重试!")
-            logging.debug("提升失败,60秒后重试!")
+            logging.info("提升失败,60秒后重试!")
             time.sleep(60 * 1)
             status = my_netspeed.speed_up()
         print("提升成功.")
-        logging.debug("提升成功.")
+        logging.info("提升成功.")
         while True:
             time.sleep(60 * 10)
             my_netspeed.speed_heartbeat()
             print("心跳包成功.")
-            logging.debug("心跳包成功.")
+            logging.info("心跳包成功.")
 
     elif sys.argv[1] == "down":
         status = my_netspeed.speed_down()
         if status:
             print("恢复成功.")
+            logging.info("恢复成功.")
         else:
-            print("恢复成功!")
+            print("恢复失败!")
+            logging.info("恢复成失败!")
             sys.exit(1)
