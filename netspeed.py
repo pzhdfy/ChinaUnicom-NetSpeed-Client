@@ -132,7 +132,7 @@ else:
         print("提升成功.")
         logging.info("提升成功.")
         while True:
-            time.sleep(60 * 10)
+            time.sleep(60 * 1)
             my_netspeed.speed_heartbeat()
             print("心跳包成功.")
             logging.info("心跳包成功.")
