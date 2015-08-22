@@ -12,6 +12,7 @@ from BeautifulSoup import BeautifulSoup
 import random
 import logging
 import logging.handlers
+import time
 reload(sys)
 sys.setdefaultencoding('utf-8')
 #ua = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_8_3) AppleWebKit/537.22 (KHTML, like Gecko) Maxthon/4.0.4.1012 Chrome/25.0.1364.99 Safari/537.22"
@@ -131,11 +132,25 @@ else:
             status = my_netspeed.speed_up()
         print("提升成功.")
         logging.info("提升成功.")
+        open('fail.log','a').write(str(time.localtime())+'\n')
         while True:
-            time.sleep(60 * 1)
-            my_netspeed.speed_heartbeat()
-            print("心跳包成功.")
-            logging.info("心跳包成功.")
+            time.sleep(60 * 10)
+            #my_netspeed.speed_heartbeat()
+            my_netspeed.get_info()
+            if(bool(my_netspeed.status)):
+                print("加速状态有效，无需处理")
+                logging.info("加速状态有效，无需处理")
+            else:
+                print("加速状态失效，重新获取")
+                logging.info("加速状态失效，重新获取")
+                open('fail.log','a').write(str(time.localtime())+'\n')
+                status = my_netspeed.speed_up()
+                if(status == False):
+                    print("提升成功.")
+                    logging.info("提升成功.")
+                else:
+                    print("提升失败,下次重试!")
+                    logging.info("提升失败,下次重试!")
 
     elif sys.argv[1] == "down":
         status = my_netspeed.speed_down()
