@@ -124,6 +124,7 @@ else:
               % (bool(my_netspeed.status), my_netspeed.old_speed, my_netspeed.old_speed_unit_name,
                  my_netspeed.new_speed, my_netspeed.hours))
     elif sys.argv[1] == "up":
+        status = my_netspeed.speed_down()
         status = my_netspeed.speed_up()
         while status == False:
             print("提升失败,60秒后重试!")
@@ -142,6 +143,7 @@ else:
             if(count>=3):
                 print("加速状态间隔三次，续期一次")
                 logging.info("加速状态间隔三次，续期一次")
+                status = my_netspeed.speed_down()
                 status = my_netspeed.speed_up()
                 if(status):
                     count = 0
@@ -157,6 +159,7 @@ else:
                 print("加速状态失效，重新获取")
                 logging.info("加速状态失效，重新获取")
                 open('fail.log','a').write(str(time.localtime())+'\n')
+                status = my_netspeed.speed_down()
                 status = my_netspeed.speed_up()
                 if(status):
                     count = 0
