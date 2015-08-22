@@ -139,7 +139,7 @@ else:
             #my_netspeed.speed_heartbeat()
             count += 1
             my_netspeed.get_info()
-            if(count>=3)
+            if(count>=3):
                 print("加速状态间隔三次，续期一次")
                 logging.info("加速状态间隔三次，续期一次")
                 status = my_netspeed.speed_up()
