@@ -133,11 +133,24 @@ else:
         print("提升成功.")
         logging.info("提升成功.")
         open('fail.log','a').write(str(time.localtime())+'\n')
+        count = 0
         while True:
             time.sleep(60 * 10)
             #my_netspeed.speed_heartbeat()
+            count += 1
             my_netspeed.get_info()
-            if(bool(my_netspeed.status)):
+            if(count>=3)
+                print("加速状态间隔三次，续期一次")
+                logging.info("加速状态间隔三次，续期一次")
+                status = my_netspeed.speed_up()
+                if(status):
+                    count = 0
+                    print("续期成功.")
+                    logging.info("续期成功.")
+                else:
+                    print("续期失败,下次重试!")
+                    logging.info("续期失败,下次重试!")
+            elif(bool(my_netspeed.status)):
                 print("加速状态有效，无需处理")
                 logging.info("加速状态有效，无需处理")
             else:
@@ -145,7 +158,8 @@ else:
                 logging.info("加速状态失效，重新获取")
                 open('fail.log','a').write(str(time.localtime())+'\n')
                 status = my_netspeed.speed_up()
-                if(status == False):
+                if(status):
+                    count = 0
                     print("提升成功.")
                     logging.info("提升成功.")
                 else:
