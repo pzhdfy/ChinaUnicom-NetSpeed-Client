@@ -28,7 +28,7 @@ class NetSpeed(object):
         self.mac = self.randomMAC()
         self.logger = logging.getLogger()
         self.logger.setLevel(logging.INFO)
-        self.logger.addHandler(logging.handlers.SysLogHandler("/dev/log"))
+#        self.logger.addHandler(logging.handlers.SysLogHandler("/dev/log"))
 
 
     def parse_info(self, html):
